@@ -2,11 +2,18 @@ const { Telegraf } = require("telegraf");
 
 require("dotenv").config();
 
+const TARGET_CHAT_ID = -1001445523274;
 const bot = new Telegraf(process.env.BOT_TOKEN);
-bot.start((ctx) => ctx.reply("Welcome"));
-bot.help((ctx) => ctx.reply("Send me a sticker"));
-bot.on("sticker", (ctx) => ctx.reply("👍"));
-bot.hears("hi", (ctx) => ctx.reply("Hey there"));
+
+bot.command("/getChatId", (ctx) => {
+  ctx.reply(ctx.message.chat.id);
+});
+
+bot.on("message", (ctx) => {
+  if (ctx.message.chat.id !== TARGET_CHAT_ID)
+    ctx.forwardMessage(TARGET_CHAT_ID);
+});
+
 bot.launch();
 
 // Enable graceful stop
